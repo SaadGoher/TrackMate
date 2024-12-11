@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.trackmate" />
+                  <option name="mobileSdkAppId" value="1:807693116375:android:177e989204052d9b96a192" />
+                  <option name="projectId" value="track-mate-6b7b9" />
+                  <option name="projectNumber" value="807693116375" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

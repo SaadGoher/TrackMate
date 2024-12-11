@@ -2,6 +2,20 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.TrackMate" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/pink_button</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/orange_text</item>
+        <item name="colorBackground">@color/background_dark</item>
+        <item name="colorOnBackground">@color/white</item>
+        <item name="colorSurface">@color/background_dark</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorError">@color/orange_text</item>
+        <item name="textColor">@color/white</item>
+    </style>
+
+    <style name="Theme.TrackMate" parent="Base.Theme.TrackMate" />
+    
+    <style name="Theme.SplashScreen" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash</item>
     </style>
 </resources>
