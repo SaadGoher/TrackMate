@@ -2,7 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="pink_button">#FFE8D9</color>
+    <color name="pink_button">#E36513</color>
     <color name="orange_text">#FFFF8A36</color>
     <color name="background_dark">#FF121212</color>
     <color name="text_gray">#FFB0B0B0</color>

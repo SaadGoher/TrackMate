@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.database.Query;
 
 import java.util.UUID;
 
@@ -73,6 +74,23 @@ public class FirebaseService {
     public static void reportItem(String userId, ReportedItem item, OnCompleteListener<Void> listener) {
         DatabaseReference itemRef = getDatabase().child("reported_items").push();
         item.setUserId(userId);
+        item.setId(itemRef.getKey());
         itemRef.setValue(item).addOnCompleteListener(listener);
+    }
+
+    public static Query getItemsByStatus(String userId, String type, String status) {
+        return getDatabase()
+                .child("reported_items")
+                .orderByChild("userId")
+                .equalTo(userId);
+    }
+
+    public static void updateItemStatus(String itemId, String status, OnCompleteListener<Void> listener) {
+        getDatabase()
+                .child("reported_items")
+                .child(itemId)
+                .child("status")
+                .setValue(status)
+                .addOnCompleteListener(listener);
     }
 }

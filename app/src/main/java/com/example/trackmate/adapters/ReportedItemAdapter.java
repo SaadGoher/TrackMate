@@ -15,12 +15,18 @@ import java.util.List;
 
 public class ReportedItemAdapter extends RecyclerView.Adapter<ReportedItemAdapter.ViewHolder> {
 
+    public interface OnItemClickListener {
+        void onItemClick(ReportedItem item);
+    }
+
     private Context context;
     private List<ReportedItem> reportedItemList;
+    private OnItemClickListener listener;
 
-    public ReportedItemAdapter(Context context, List<ReportedItem> reportedItemList) {
+    public ReportedItemAdapter(Context context, List<ReportedItem> reportedItemList, OnItemClickListener listener) {
         this.context = context;
         this.reportedItemList = reportedItemList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -36,17 +42,23 @@ public class ReportedItemAdapter extends RecyclerView.Adapter<ReportedItemAdapte
         holder.itemName.setText(item.getName());
         holder.itemDate.setText(item.getDate());
         holder.itemLocation.setText(item.getLocation());
-        holder.itemTag.setText(item.isLost() ? "Lost" : "Found");
+        holder.itemTag.setText(item.getType() == ReportedItem.Type.LOST ? "Lost" : "Found");
         if (item.getImageUrl() != null) {
             Glide.with(context).load(item.getImageUrl()).into(holder.itemImage);
         } else {
             holder.itemImage.setImageResource(R.drawable.item);
         }
+        holder.itemView.setOnClickListener(v -> listener.onItemClick(item));
     }
 
     @Override
     public int getItemCount() {
         return reportedItemList.size();
+    }
+
+    public void updateList(List<ReportedItem> newList) {
+        reportedItemList = newList;
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

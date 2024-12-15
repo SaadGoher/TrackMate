@@ -11,9 +11,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import com.example.trackmate.R;
 import com.example.trackmate.models.ReportedItem;
 import com.example.trackmate.services.FirebaseService;
@@ -23,6 +26,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.util.Calendar;
 
@@ -35,6 +40,7 @@ public class ReportFragment extends Fragment {
     private TextInputEditText itemDate;
     private TextInputEditText itemLocation;
     private TextInputEditText itemDescription;
+    private RadioGroup itemStatusGroup;
     private MaterialButton submitButton;
     private ProgressBar progressBar;
     private Uri imageUri;
@@ -49,6 +55,7 @@ public class ReportFragment extends Fragment {
         itemDate = view.findViewById(R.id.item_date);
         itemLocation = view.findViewById(R.id.item_location);
         itemDescription = view.findViewById(R.id.item_description);
+        itemStatusGroup = view.findViewById(R.id.item_status_group);
         submitButton = view.findViewById(R.id.submit_button);
         progressBar = view.findViewById(R.id.progress_bar);
 
@@ -93,42 +100,89 @@ public class ReportFragment extends Fragment {
         String date = itemDate.getText().toString().trim();
         String location = itemLocation.getText().toString().trim();
         String description = itemDescription.getText().toString().trim();
+        String status = ((RadioButton) getView().findViewById(itemStatusGroup.getCheckedRadioButtonId())).getText().toString().trim();
 
+        if (validateInputs(name, date, location, description, status)) {
+            progressBar.setVisibility(View.VISIBLE);
+            submitButton.setEnabled(false);
+
+            if (imageUri != null) {
+                // First upload the image, then create the report
+                FirebaseService.uploadImage(imageUri, new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        String imageUrl = task.isSuccessful() && task.getResult() != null ? task.getResult().toString() : null;
+                        createAndSaveReport(name, date, location, description, imageUrl, status);
+                    }
+                });
+            } else {
+                // Create report without image
+                createAndSaveReport(name, date, location, description, null, status);
+            }
+        }
+    }
+
+    private boolean validateInputs(String name, String date, String location, String description, String status) {
         if (name.isEmpty()) {
             itemName.setError("Item Name is required");
-            return;
+            return false;
         }
-
         if (date.isEmpty()) {
             itemDate.setError("Date is required");
-            return;
+            return false;
         }
-
         if (location.isEmpty()) {
             itemLocation.setError("Location is required");
-            return;
+            return false;
         }
-
         if (description.isEmpty()) {
             itemDescription.setError("Description is required");
-            return;
+            return false;
         }
+        if (status.isEmpty()) {
+            Toast.makeText(getContext(), "Status is required", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
 
-        progressBar.setVisibility(View.VISIBLE);
-        ReportedItem item = new ReportedItem(name, date, location, description, null);
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private void createAndSaveReport(String name, String date, String location, 
+                                   String description, String imageUrl, String status) {
+        String userId = FirebaseService.getCurrentUser().getUid();
+        ReportedItem.Type type = status.equals("Lost") ? ReportedItem.Type.LOST : ReportedItem.Type.FOUND;
+        ReportedItem item = new ReportedItem(name, description, location, 
+                                           date, imageUrl, type);
         item.setUserId(userId);
-        FirebaseService.reportItem(userId, item, new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                progressBar.setVisibility(View.GONE);
-                if (task.isSuccessful()) {
-                    Toast.makeText(getContext(), "Item reported successfully", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Failed to report item", Toast.LENGTH_SHORT).show();
-                }
+        
+        FirebaseService.reportItem(userId, item, task -> {
+            progressBar.setVisibility(View.GONE);
+            submitButton.setEnabled(true);
+            
+            if (task.isSuccessful()) {
+                Toast.makeText(getContext(), "Item reported successfully", 
+                             Toast.LENGTH_SHORT).show();
+                clearForm();
+            } else {
+                handleError("Failed to report item");
             }
         });
     }
+
+    private void handleError(String message) {
+        progressBar.setVisibility(View.GONE);
+        submitButton.setEnabled(true);
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void clearForm() {
+        itemName.setText("");
+        itemDate.setText("");
+        itemLocation.setText("");
+        itemDescription.setText("");
+        itemStatusGroup.clearCheck();
+        itemImage.setImageResource(R.drawable.baseline_add_a_photo_24);
+        imageUri = null;
+    }
 }
+
 

@@ -6,11 +6,17 @@ import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.example.trackmate.fragments.AboutFragment;
+import com.example.trackmate.fragments.ContactFragment;
 import com.example.trackmate.fragments.FoundFragment;
 import com.example.trackmate.fragments.HomeFragment;
 import com.example.trackmate.fragments.InfoFragment;
+import com.example.trackmate.fragments.PolicyFragment;
 import com.example.trackmate.fragments.ProfileFragment;
 import com.example.trackmate.fragments.ReportFragment;
+import com.example.trackmate.fragments.SettingsFragment;
+import com.example.trackmate.fragments.TermsFragment;
+import com.example.trackmate.services.FirebaseService;
 import com.example.trackmate.utils.SharedPrefsUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.fragment.app.Fragment;
@@ -61,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_home_24);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_menu_24);
         toolbar.setTitleTextColor(getResources().getColor(R.color.black));
         toolbar.setTitle("TrackMate");
     }
@@ -112,11 +118,40 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
+            Fragment selectedFragment = null;
+            String tag = null;
             if (itemId == R.id.nav_settings) {
-                // Handle settings action
+                selectedFragment = new SettingsFragment();
+                tag = "SETTINGS";
+            } else if (itemId == R.id.nav_policy) {
+                selectedFragment = new PolicyFragment();
+                tag = "POLICY";
+            } else if (itemId == R.id.nav_terms) {
+                selectedFragment = new TermsFragment();
+                tag = "TERMS";
+            } else if (itemId == R.id.nav_about) {
+                selectedFragment = new AboutFragment();
+                tag = "ABOUT";
+            } else if (itemId == R.id.nav_contact) {
+                selectedFragment = new ContactFragment();
+                tag = "CONTACT";
+            } else if (itemId == R.id.nav_sign_out) {
+                FirebaseService.getAuth().signOut();
+                SharedPrefsUtil.setLoggedIn(this, false);
+                SharedPrefsUtil.setUserId(this, null);
+                Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+                startActivity(intent);
+                finish();
                 return true;
             }
-            return false;
+            if (selectedFragment != null && tag != null) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.fragment_container, selectedFragment, tag);
+                transaction.commit();
+            }
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
         });
     }
 }

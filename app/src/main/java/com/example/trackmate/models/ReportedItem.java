@@ -1,24 +1,45 @@
 package com.example.trackmate.models;
 
 public class ReportedItem {
-    private String name;
-    private String date;
-    private String location;
-    private String description;
-    private String imageUrl;
-    private String userId;
-    private boolean lost;
-
-    public ReportedItem() {
-        // Default constructor required for calls to DataSnapshot.getValue(ReportedItem.class)
+    public enum Status {
+        OPEN, CLOSED, RESOLVED
     }
 
-    public ReportedItem(String name, String date, String location, String description, String imageUrl) {
+    public enum Type {
+        LOST, FOUND
+    }
+
+    private String id;
+    private String userId;
+    private String name;
+    private String description;
+    private String location;
+    private String date;
+    private String imageUrl;
+    private Type type;
+    private Status status;
+    private long timestamp;
+    private String receiverId;
+
+    // Default constructor for Firebase
+    public ReportedItem() {}
+
+    // Constructor with parameters
+    public ReportedItem(String name, String description, String location, 
+                       String date, String imageUrl, Type type) {
         this.name = name;
-        this.date = date;
-        this.location = location;
         this.description = description;
+        this.location = location;
+        this.date = date;
         this.imageUrl = imageUrl;
+        this.type = type;
+        this.status = Status.OPEN;
+        this.timestamp = System.currentTimeMillis();
+    }
+
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {
@@ -49,11 +70,43 @@ public class ReportedItem {
         this.userId = userId;
     }
 
-    public boolean isLost() {
-        return lost;
+    public Type getType() {
+        return type;
     }
 
-    public void setLost(boolean lost) {
-        this.lost = lost;
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public boolean isLost() {
+        return Type.LOST.equals(type);
+    }
+
+    public void setId(String key) {
+        this.id = key;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getReceiverId() {
+        return receiverId;
+    }
+
+    public void setReceiverId(String receiverId) {
+        this.receiverId = receiverId;
     }
 }

@@ -9,6 +9,7 @@ public class User {
     private String street;
     private String city;
     private String country;
+    private String displayName;
 
     public User() {
     }
@@ -77,6 +78,14 @@ public class User {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 }
 

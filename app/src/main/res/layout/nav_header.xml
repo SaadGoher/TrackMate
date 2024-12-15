@@ -4,17 +4,19 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/nav_header_background"> <!-- Use the new drawable resource -->
+    android:background="?attr/colorPrimary"
+    android:gravity="center"> 
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/baseline_home_24" />
-
+        android:layout_width="48dp" 
+        android:layout_height="48dp"
+        android:src="@drawable/icon" /> 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User Name"
-        android:textColor="@android:color/white"
-        android:textSize="18sp" />
+        android:text="TrackMate"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif-medium"
+        android:layout_gravity="center" /> 
 </LinearLayout>

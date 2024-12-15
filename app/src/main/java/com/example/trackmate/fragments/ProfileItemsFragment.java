@@ -55,7 +55,7 @@ public class ProfileItemsFragment extends Fragment {
         itemsList = new ArrayList<>();
         adapter = new ReportedItemAdapter(getContext(), itemsList, item -> {
             Intent intent = new Intent(getContext(), ItemDetailActivity.class);
-            intent.putExtra("item", item);
+            intent.putExtra("item_id", item.getId());
             startActivity(intent);
         });
         recyclerView.setAdapter(adapter);

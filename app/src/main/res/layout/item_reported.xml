@@ -31,7 +31,7 @@
             android:padding="4dp"
             android:text="Tag"
             android:background="@drawable/rounded_tag_background"
-            android:textColor="?attr/colorOnSurface"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -61,7 +61,7 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/baseline_home_24"
+                    android:src="@drawable/baseline_access_time_filled_24"
                     app:tint="?attr/colorOnSurfaceVariant" />
 
                 <TextView
@@ -83,7 +83,7 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/baseline_home_24"
+                    android:src="@drawable/baseline_location_pin_24"
                     app:tint="?attr/colorOnSurfaceVariant" />
 
                 <TextView
