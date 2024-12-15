@@ -7,6 +7,7 @@ public class ReportedItem {
     private String description;
     private String imageUrl;
     private String userId;
+    private boolean lost;
 
     public ReportedItem() {
         // Default constructor required for calls to DataSnapshot.getValue(ReportedItem.class)
@@ -46,5 +47,13 @@ public class ReportedItem {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public boolean isLost() {
+        return lost;
+    }
+
+    public void setLost(boolean lost) {
+        this.lost = lost;
     }
 }

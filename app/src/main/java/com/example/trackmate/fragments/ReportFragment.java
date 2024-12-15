@@ -114,34 +114,18 @@ public class ReportFragment extends Fragment {
             return;
         }
 
-        if (imageUri == null) {
-            Toast.makeText(getContext(), "Image is required", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         progressBar.setVisibility(View.VISIBLE);
-        FirebaseService.uploadImage(imageUri, new OnCompleteListener<Uri>() {
+        ReportedItem item = new ReportedItem(name, date, location, description, null);
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        item.setUserId(userId);
+        FirebaseService.reportItem(userId, item, new OnCompleteListener<Void>() {
             @Override
-            public void onComplete(@NonNull Task<Uri> task) {
+            public void onComplete(@NonNull Task<Void> task) {
+                progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-                    ReportedItem item = new ReportedItem(name, date, location, description, downloadUri.toString());
-                    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    item.setUserId(userId);
-                    FirebaseService.reportItem(userId, item, new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            progressBar.setVisibility(View.GONE);
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getContext(), "Item reported successfully", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getContext(), "Failed to report item", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+                    Toast.makeText(getContext(), "Item reported successfully", Toast.LENGTH_SHORT).show();
                 } else {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), "Failed to upload image", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Failed to report item", Toast.LENGTH_SHORT).show();
                 }
             }
         });

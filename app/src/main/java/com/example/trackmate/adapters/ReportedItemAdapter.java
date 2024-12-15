@@ -36,8 +36,12 @@ public class ReportedItemAdapter extends RecyclerView.Adapter<ReportedItemAdapte
         holder.itemName.setText(item.getName());
         holder.itemDate.setText(item.getDate());
         holder.itemLocation.setText(item.getLocation());
-        holder.itemDescription.setText(item.getDescription());
-        Glide.with(context).load(item.getImageUrl()).into(holder.itemImage);
+        holder.itemTag.setText(item.isLost() ? "Lost" : "Found");
+        if (item.getImageUrl() != null) {
+            Glide.with(context).load(item.getImageUrl()).into(holder.itemImage);
+        } else {
+            holder.itemImage.setImageResource(R.drawable.item);
+        }
     }
 
     @Override
@@ -50,7 +54,7 @@ public class ReportedItemAdapter extends RecyclerView.Adapter<ReportedItemAdapte
         public TextView itemName;
         public TextView itemDate;
         public TextView itemLocation;
-        public TextView itemDescription;
+        public TextView itemTag;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -58,7 +62,7 @@ public class ReportedItemAdapter extends RecyclerView.Adapter<ReportedItemAdapte
             itemName = itemView.findViewById(R.id.item_name);
             itemDate = itemView.findViewById(R.id.item_date);
             itemLocation = itemView.findViewById(R.id.item_location);
-            itemDescription = itemView.findViewById(R.id.item_description);
+            itemTag = itemView.findViewById(R.id.item_tag);
         }
     }
 }
