@@ -1,16 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.TrackMate" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <item name="colorPrimary">@color/pink_button</item>
+    <style name="Base.Theme.TrackMate.Dark" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/primary_dark</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSecondary">@color/orange_text</item>
+        <item name="colorSecondary">@color/secondary_dark</item>
         <item name="colorBackground">@color/background_dark</item>
-        <item name="colorOnBackground">@color/white</item>
-        <item name="colorSurface">@color/background_dark</item>
-        <item name="colorOnSurface">@color/white</item>
-        <item name="colorError">@color/orange_text</item>
-        <item name="textColor">@color/white</item>
+        <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="colorError">@color/secondary_dark</item>
     </style>
 
     <style name="Theme.TrackMate" parent="Base.Theme.TrackMate" />

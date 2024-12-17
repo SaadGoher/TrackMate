@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:text="See all"
                 android:textAlignment="textEnd"
-                android:textColor="@color/link_color"
+                android:textColor="@color/secondary_dark"
                 android:clickable="true"
                 android:focusable="true" />
         </LinearLayout>
