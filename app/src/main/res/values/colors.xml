@@ -8,6 +8,8 @@
     <color name="background_light">#F2F2F7</color> <!-- iOS Light Gray -->
     <color name="surface_light">#FFFFFF</color>
     <color name="on_surface_light">#1C1C1E</color> <!-- Dark Text -->
+    <color name="gray">#808080</color>
+    <color name="red">#FF0000</color>
 
     <!-- Dark Theme Colors -->
     <color name="primary_dark">#0A84FF</color> <!-- Darker iOS Blue -->
