@@ -9,6 +9,8 @@ public class Message {
     private String text;
     private String imageUrl;
     private long timestamp;
+    private String receiverName;
+    private String receiverImage;
 
     // Getter and Setter for senderId
     public String getSenderId() {
@@ -53,6 +55,24 @@ public class Message {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    // Getter and Setter for receiverName
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
+    }
+
+    // Getter and Setter for receiverImage
+    public String getReceiverImage() {
+        return receiverImage;
+    }
+
+    public void setReceiverImage(String receiverImage) {
+        this.receiverImage = receiverImage;
     }
 
     public Map<String, Object> toMap() {

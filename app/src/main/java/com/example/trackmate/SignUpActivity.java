@@ -1,6 +1,7 @@
 package com.example.trackmate;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -17,6 +20,7 @@ import com.example.trackmate.models.User;
 import com.example.trackmate.services.FirebaseService;
 import com.example.trackmate.utils.SharedPrefsUtil;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,6 +29,9 @@ public class SignUpActivity extends AppCompatActivity {
 
     private EditText fullNameInput, emailInput, contactInput, homeInput, streetInput, cityInput, countryInput, passwordInput;
     private ProgressBar progressBar;
+    private ShapeableImageView profileImage;
+    private Uri profileImageUri;
+    private ActivityResultLauncher<String> pickImageLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +53,17 @@ public class SignUpActivity extends AppCompatActivity {
         countryInput = findViewById(R.id.country_input);
         passwordInput = findViewById(R.id.password_input);
         progressBar = findViewById(R.id.progress_bar);
+        profileImage = findViewById(R.id.profile_image);
+        MaterialButton selectImageButton = findViewById(R.id.select_image_button);
+
+        pickImageLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+            if (uri != null) {
+                profileImageUri = uri;
+                profileImage.setImageURI(uri);
+            }
+        });
+
+        selectImageButton.setOnClickListener(v -> pickImageLauncher.launch("image/*"));
 
         MaterialButton signUpButton = findViewById(R.id.sign_up_button);
         signUpButton.setOnClickListener(v -> signUpUser());
@@ -111,21 +129,17 @@ public class SignUpActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
 
         FirebaseService.createUser(email, password, task -> {
-            progressBar.setVisibility(View.GONE);
             if (task.isSuccessful()) {
                 FirebaseUser user = FirebaseService.getCurrentUser();
                 if (user != null) {
-                    SharedPrefsUtil.setLoggedIn(SignUpActivity.this, true);
-                    SharedPrefsUtil.setUserId(SignUpActivity.this, user.getUid());
-
-                    User userDetails = new User(fullName, email, contact, home, street, city, country);
-                    FirebaseService.saveUserDetails(user.getUid(), userDetails);
-
-                    Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    if (profileImageUri != null) {
+                        uploadProfileImageAndSaveUser(user.getUid(), fullName, email, contact, home, street, city, country);
+                    } else {
+                        saveUserToDatabase(user.getUid(), fullName, email, contact, home, street, city, country, null);
+                    }
                 }
             } else {
+                progressBar.setVisibility(View.GONE);
                 String errorMessage = "Sign Up failed.";
                 if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                     errorMessage = "This email is already registered.";
@@ -135,5 +149,32 @@ public class SignUpActivity extends AppCompatActivity {
                 Toast.makeText(SignUpActivity.this, errorMessage, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void uploadProfileImageAndSaveUser(String userId, String fullName, String email, String contact, 
+                                             String home, String street, String city, String country) {
+        FirebaseService.uploadImage(profileImageUri, task -> {
+            if (task.isSuccessful()) {
+                Uri downloadUri = task.getResult();
+                saveUserToDatabase(userId, fullName, email, contact, home, street, city, country, downloadUri.toString());
+            } else {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(SignUpActivity.this, "Failed to upload profile image", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void saveUserToDatabase(String userId, String fullName, String email, String contact,
+                                  String home, String street, String city, String country, String imageUrl) {
+        User userDetails = new User(fullName, email, contact, home, street, city, country);
+        userDetails.setProfileImageUrl(imageUrl);
+        
+        FirebaseService.saveUserDetails(userId, userDetails);
+        SharedPrefsUtil.setLoggedIn(SignUpActivity.this, true);
+        SharedPrefsUtil.setUserId(SignUpActivity.this, userId);
+        
+        progressBar.setVisibility(View.GONE);
+        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+        finish();
     }
 }

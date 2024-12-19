@@ -11,24 +11,18 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import com.example.trackmate.R;
 import com.example.trackmate.models.ReportedItem;
 import com.example.trackmate.services.FirebaseService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.android.material.textfield.MaterialAutoCompleteTextView;
-
 import java.util.Calendar;
 
 public class ReportFragment extends Fragment {
@@ -40,7 +34,7 @@ public class ReportFragment extends Fragment {
     private TextInputEditText itemDate;
     private TextInputEditText itemLocation;
     private TextInputEditText itemDescription;
-    private RadioGroup itemStatusGroup;
+    private ChipGroup itemStatusGroup;
     private MaterialButton submitButton;
     private ProgressBar progressBar;
     private Uri imageUri;
@@ -100,7 +94,7 @@ public class ReportFragment extends Fragment {
         String date = itemDate.getText().toString().trim();
         String location = itemLocation.getText().toString().trim();
         String description = itemDescription.getText().toString().trim();
-        String status = ((RadioButton) getView().findViewById(itemStatusGroup.getCheckedRadioButtonId())).getText().toString().trim();
+        String status = ((com.google.android.material.chip.Chip) getView().findViewById(itemStatusGroup.getCheckedChipId())).getText().toString().trim();
 
         if (validateInputs(name, date, location, description, status)) {
             progressBar.setVisibility(View.VISIBLE);
@@ -111,8 +105,12 @@ public class ReportFragment extends Fragment {
                 FirebaseService.uploadImage(imageUri, new OnCompleteListener<Uri>() {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
-                        String imageUrl = task.isSuccessful() && task.getResult() != null ? task.getResult().toString() : null;
-                        createAndSaveReport(name, date, location, description, imageUrl, status);
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            String imageUrl = task.getResult().toString();
+                            createAndSaveReport(name, date, location, description, imageUrl, status);
+                        } else {
+                            handleError("Failed to upload image");
+                        }
                     }
                 });
             } else {
@@ -146,21 +144,18 @@ public class ReportFragment extends Fragment {
         return true;
     }
 
-    private void createAndSaveReport(String name, String date, String location, 
-                                   String description, String imageUrl, String status) {
+    private void createAndSaveReport(String name, String date, String location, String description, String imageUrl, String status) {
         String userId = FirebaseService.getCurrentUser().getUid();
         ReportedItem.Type type = status.equals("Lost") ? ReportedItem.Type.LOST : ReportedItem.Type.FOUND;
-        ReportedItem item = new ReportedItem(name, description, location, 
-                                           date, imageUrl, type);
+        ReportedItem item = new ReportedItem(name, description, location, date, imageUrl, type);
         item.setUserId(userId);
-        
+
         FirebaseService.reportItem(userId, item, task -> {
             progressBar.setVisibility(View.GONE);
             submitButton.setEnabled(true);
-            
+
             if (task.isSuccessful()) {
-                Toast.makeText(getContext(), "Item reported successfully", 
-                             Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Item reported successfully", Toast.LENGTH_SHORT).show();
                 clearForm();
             } else {
                 handleError("Failed to report item");

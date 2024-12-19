@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
 import com.example.trackmate.EditProfileActivity;
 import com.example.trackmate.R;
 import com.example.trackmate.adapters.ProfileViewPagerAdapter;
@@ -19,13 +20,16 @@ import com.example.trackmate.models.User;
 import com.example.trackmate.services.FirebaseService;
 import com.example.trackmate.utils.SharedPrefsUtil;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 public class ProfileFragment extends Fragment {
+    private ShapeableImageView profileImage;
     private TextView userName, userEmail;
     private TextView lostItemsCount, foundItemsCount;
     private ViewPager2 viewPager;
@@ -35,12 +39,13 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        
+
+        profileImage = view.findViewById(R.id.profile_image);
         initializeViews(view);
         setupViewPager();
         loadUserProfile();
         setupEditButton(view);
-        
+
         return view;
     }
 
@@ -64,27 +69,36 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadUserProfile() {
-        FirebaseService.getDatabase()
-            .child("users")
-            .child(userId)
-            .addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    User user = snapshot.getValue(User.class);
-                    if (user != null) {
-                        userName.setText(user.getFullName());
-                        userEmail.setText(user.getEmail());
+        if (FirebaseService.getCurrentUser() == null) {
+            return;
+        }
+
+        String userId = FirebaseService.getCurrentUser().getUid();
+        DatabaseReference userRef = FirebaseService.getDatabase().child("users").child(userId);
+
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult().exists()) {
+                User user = task.getResult().getValue(User.class);
+                if (user != null) {
+                    userName.setText(user.getFullName());
+                    userEmail.setText(user.getEmail());
+
+                    // Load profile image using Glide with proper error handling
+                    if (user.getProfileImageUrl() != null && !user.getProfileImageUrl().isEmpty()) {
+                        Glide.with(requireContext())
+                            .load(user.getProfileImageUrl())
+                            .placeholder(R.drawable.baseline_person_24)
+                            .error(R.drawable.baseline_person_24)
+                            .centerCrop()
+                            .into(profileImage);
+                    } else {
+                        profileImage.setImageResource(R.drawable.baseline_person_24);
                     }
+                    // Load counts
+                    loadItemCounts();
                 }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    // Handle error
-                }
-            });
-
-        // Load counts
-        loadItemCounts();
+            }
+        });
     }
 
     private void loadItemCounts() {
@@ -123,6 +137,13 @@ public class ProfileFragment extends Fragment {
             Intent intent = new Intent(getActivity(), EditProfileActivity.class);
             startActivity(intent);
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Reload profile when returning to fragment (e.g., after editing)
+        loadUserProfile();
     }
 }
 

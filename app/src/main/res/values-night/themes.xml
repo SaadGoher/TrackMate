@@ -1,18 +1,76 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.TrackMate.Dark" parent="Theme.Material3.Dark.NoActionBar">
+    <style name="Base.Theme.TrackMate" parent="Theme.Material3.Dark.NoActionBar">
         <item name="colorPrimary">@color/primary_dark</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/secondary_dark</item>
         <item name="colorBackground">@color/background_dark</item>
         <item name="colorSurface">@color/surface_dark</item>
         <item name="colorOnSurface">@color/on_surface_dark</item>
-        <item name="colorError">@color/secondary_dark</item>
+        <item name="android:windowBackground">@color/background_dark</item>
+        
+        <!-- Custom styles -->
+        <item name="materialCardViewStyle">@style/Widget.App.CardView.Dark</item>
+        <item name="textInputStyle">@style/Widget.App.TextInputLayout.Dark</item>
     </style>
 
     <style name="Theme.TrackMate" parent="Base.Theme.TrackMate" />
-    
+
     <style name="Theme.SplashScreen" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
+    <!-- Card style for dark theme -->
+    <style name="Widget.App.CardView.Dark" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/surface_dark</item>
+        <item name="cardForegroundColor">@android:color/transparent</item>
+        <item name="elevationOverlayEnabled">false</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="rippleColor">@android:color/transparent</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:clipChildren">false</item>
+        <item name="android:textColor">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Dark.Card</item>
+    </style>
+
+    <style name="ThemeOverlay.Dark.Card" parent="">
+        <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+    </style>
+
+    <!-- TextInput style for dark theme -->
+    <style name="Widget.App.TextInputLayout.Dark" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/surface_dark</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="boxStrokeColor">@android:color/transparent</item>
+        <item name="android:textColorHint">?attr/colorOnSurface</item>
+        <item name="hintTextColor">?attr/colorPrimary</item>
+        <item name="startIconTint">?attr/colorOnSurface</item>
+        <item name="endIconTint">?attr/colorOnSurface</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+    </style>
+
+    <!-- Button style for dark theme -->
+    <style name="Widget.App.Button.Dark" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/primary_dark</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
+
+    <!-- Search Input style for dark theme -->
+    <style name="Widget.App.SearchInput.Dark" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/surface_dark</item>
+        <item name="boxStrokeColor">@android:color/transparent</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="hintTextColor">@color/primary_dark</item>
+        <item name="startIconTint">@color/white</item>
     </style>
 </resources>

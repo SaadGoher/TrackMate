@@ -10,16 +10,26 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.trackmate.models.User;
 import com.example.trackmate.services.FirebaseService;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import android.content.Intent;
+import android.net.Uri;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 public class EditProfileActivity extends AppCompatActivity {
 
     private EditText fullNameInput, emailInput, contactInput, homeInput, streetInput, cityInput, countryInput;
-    private MaterialButton saveButton;
+    private MaterialButton saveButton, changeProfilePicButton;
+    private ShapeableImageView profileImage;
+    private Uri profileImageUri;
+    private ActivityResultLauncher<String> pickImageLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +42,8 @@ public class EditProfileActivity extends AppCompatActivity {
             return insets;
         });
 
+        profileImage = findViewById(R.id.profile_image);
+        changeProfilePicButton = findViewById(R.id.change_profile_pic_button);
         fullNameInput = findViewById(R.id.full_name_input);
         emailInput = findViewById(R.id.email_input);
         contactInput = findViewById(R.id.contact_input);
@@ -44,6 +56,14 @@ public class EditProfileActivity extends AppCompatActivity {
         loadUserData();
 
         saveButton.setOnClickListener(v -> saveUserData());
+        changeProfilePicButton.setOnClickListener(v -> pickImageLauncher.launch("image/*"));
+
+        pickImageLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+            if (uri != null) {
+                profileImageUri = uri;
+                profileImage.setImageURI(uri);
+            }
+        });
     }
 
     private void loadUserData() {
@@ -64,6 +84,9 @@ public class EditProfileActivity extends AppCompatActivity {
                     streetInput.setText(user.getStreet());
                     cityInput.setText(user.getCity());
                     countryInput.setText(user.getCountry());
+                    if (user.getProfileImageUrl() != null) {
+                        Glide.with(this).load(user.getProfileImageUrl()).into(profileImage);
+                    }
                 }
             } else {
                 Toast.makeText(EditProfileActivity.this, "Failed to load user data", Toast.LENGTH_SHORT).show();
@@ -87,9 +110,27 @@ public class EditProfileActivity extends AppCompatActivity {
 
         String userId = FirebaseService.getCurrentUser().getUid();
         User user = new User(fullName, email, contact, home, street, city, country);
+
+        if (profileImageUri != null) {
+            FirebaseService.uploadImage(profileImageUri, task -> {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    user.setProfileImageUrl(downloadUri.toString());
+                    saveUserToDatabase(userId, user);
+                } else {
+                    Toast.makeText(EditProfileActivity.this, "Failed to upload profile image", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            saveUserToDatabase(userId, user);
+        }
+    }
+
+    private void saveUserToDatabase(String userId, User user) {
         FirebaseService.getDatabase().child("users").child(userId).setValue(user).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(EditProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
+                finish();  // Close the activity and go back
             } else {
                 Toast.makeText(EditProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
             }

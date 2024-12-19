@@ -5,7 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.Menu;
+import android.graphics.drawable.Drawable;
+import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
 
+import com.example.trackmate.activities.ShareProfileActivity;
 import com.example.trackmate.fragments.AboutFragment;
 import com.example.trackmate.fragments.ContactFragment;
 import com.example.trackmate.fragments.FoundFragment;
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_PROFILE = "PROFILE";
 
     private DrawerLayout drawerLayout;
+    private boolean isNavigatingBack = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,18 +73,63 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_menu_24);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.black));
+        
+        // Create and set white navigation icon
+        Drawable navIcon = getResources().getDrawable(R.drawable.baseline_menu_24);
+        navIcon.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
+        getSupportActionBar().setHomeAsUpIndicator(navIcon);
+        
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setTitle("TrackMate");
+        toolbar.setBackgroundColor(getResources().getColor(R.color.primary_light));
+
+        // Set overflow icon color to white
+        Drawable overflowIcon = toolbar.getOverflowIcon();
+        if (overflowIcon != null) {
+            overflowIcon.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
+            toolbar.setOverflowIcon(overflowIcon);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        // Set QR code icon color to white
+        for (int i = 0; i < menu.size(); i++) {
+            Drawable drawable = menu.getItem(i).getIcon();
+            if (drawable != null) {
+                drawable.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
+            }
+        }
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
+            if (isNavigatingBack) {
+                onBackPressed();
+                return true;
+            }
             drawerLayout.openDrawer(GravityCompat.START);
+            return true;
+        } else if (item.getItemId() == R.id.action_qr_code) {
+            Intent intent = new Intent(MainActivity.this, ShareProfileActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showBackButton(boolean show) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(show);
+        isNavigatingBack = show;
+    }
+
+    public void setToolbarTitle(String title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
     }
 
     private void setupBottomNavigation() {

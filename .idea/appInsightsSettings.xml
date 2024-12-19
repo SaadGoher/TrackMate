@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.trackmate" />
-                  <option name="mobileSdkAppId" value="1:807693116375:android:177e989204052d9b96a192" />
-                  <option name="projectId" value="track-mate-6b7b9" />
-                  <option name="projectNumber" value="807693116375" />
+                  <option name="mobileSdkAppId" value="1:322598534879:android:0e76683c39e5c27a0fb36a" />
+                  <option name="projectId" value="symilars-library" />
+                  <option name="projectNumber" value="322598534879" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

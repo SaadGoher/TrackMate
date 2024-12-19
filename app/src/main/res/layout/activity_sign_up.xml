@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:windowBackground"
     tools:context=".SignUpActivity"
     android:orientation="vertical"
     android:windowSoftInputMode="adjustResize">
@@ -26,17 +27,47 @@
                 android:src="@drawable/icon"
                 android:layout_marginTop="32dp" />
 
-            <TextView
-                android:id="@+id/sign_up_title"
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/profile_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="32dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/baseline_person_24"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/select_image_button"
+                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Select Profile Picture" />
+
+            <TextView
+                android:id="@+id/sign_up_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/illustration"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
                 android:text="Sign Up"
                 android:textSize="24sp"
-                android:textColor="?attr/colorPrimary"
-                android:layout_marginTop="16dp" />
+                android:textColor="?attr/colorOnSurface"
+                android:textStyle="bold"  />
+            <TextView
+                android:id="@+id/signup_subheading_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/welcome_text"
+                android:layout_centerHorizontal="true"
+                android:text="Sign up  account for TrackMate"
+                android:textSize="14sp"
+                android:textColor="?attr/colorOnSurface" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/full_name_input_layout"
+                style="?attr/textInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp">
@@ -46,11 +77,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Full Name"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:drawableStart="@drawable/baseline_person_24"
+                    android:layout_margin="10dp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurface"
+                    android:drawableTint="?attr/colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/email_input_layout"
+                style="?attr/textInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp">
@@ -60,11 +97,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Email"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress"
+                    android:drawableStart="@drawable/baseline_alternate_email_24"
+                    android:layout_margin="10dp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurface"
+                    android:drawableTint="?attr/colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/contact_input_layout"
+                style="?attr/textInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp">
@@ -74,11 +117,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Contact"
-                    android:inputType="phone" />
+                    android:inputType="phone"
+                    android:drawableStart="@drawable/baseline_call_24"
+                    android:layout_margin="10dp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurface"
+                    android:drawableTint="?attr/colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/home_input_layout"
+                style="?attr/textInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp">
@@ -88,11 +137,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Home Address"
-                    android:inputType="textPostalAddress" />
+                    android:inputType="textPostalAddress"
+                    android:drawableStart="@drawable/baseline_home_24"
+                    android:layout_margin="10dp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurface"
+                    android:drawableTint="?attr/colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/street_input_layout"
+                style="?attr/textInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp">
@@ -102,11 +157,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Street"
-                    android:inputType="textPostalAddress" />
+                    android:inputType="textPostalAddress"
+                    android:drawableStart="@drawable/baseline_location_pin_24"
+                    android:layout_margin="10dp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurface"
+                    android:drawableTint="?attr/colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/city_input_layout"
+                style="?attr/textInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp">
@@ -116,11 +177,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="City"
-                    android:inputType="textPostalAddress" />
+                    android:inputType="textPostalAddress"
+                    android:drawableStart="@drawable/baseline_location_pin_24"
+                    android:layout_margin="10dp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurface"
+                    android:drawableTint="?attr/colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/country_input_layout"
+                style="?attr/textInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp">
@@ -130,11 +197,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Country"
-                    android:inputType="textPostalAddress" />
+                    android:inputType="textPostalAddress"
+                    android:drawableStart="@drawable/baseline_flag_24"
+                    android:layout_margin="10dp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurface"
+                    android:drawableTint="?attr/colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/password_input_layout"
+                style="?attr/textInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp">
@@ -144,27 +217,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Password"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:drawableStart="@drawable/ic_password"
+                    android:layout_margin="10dp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurface"
+                    android:drawableTint="?attr/colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/sign_up_button"
+                style="@style/Widget.App.Button.Light"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Sign Up"
-                style="@style/Widget.Material3.Button"
-                app:cornerRadius="8dp"
                 android:layout_marginTop="16dp" />
 
             <TextView
                 android:id="@+id/sign_in_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/social_buttons"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="24dp"
                 android:text="Already have an account? Sign In"
-                android:textColor="?attr/colorSecondary"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_marginTop="16dp" />
+                android:textColor="?attr/colorPrimary"
+                android:textSize="14sp"
+                android:paddingBottom="100dp"/>
 
 
 

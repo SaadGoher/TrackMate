@@ -10,6 +10,8 @@ public class User {
     private String city;
     private String country;
     private String displayName;
+    private String profileImageUrl;
+
 
     public User() {
     }
@@ -86,6 +88,14 @@ public class User {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }
 

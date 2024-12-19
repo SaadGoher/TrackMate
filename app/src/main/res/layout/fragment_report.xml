@@ -1,92 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?android:windowBackground"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/item_image"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/baseline_add_a_photo_24"
-            android:tint="?attr/colorOnBackground"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Material3.Corner.Full" />
+            app:cardCornerRadius="12dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorPrimary"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/item_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                android:src="@drawable/baseline_add_a_photo_24"
+                android:tint="?attr/colorOnSurface"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent" />
+        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Item Name">
+            android:hint="Item Name"
+            style="?attr/textInputStyle"
+            android:layout_marginTop="16dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/item_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/baseline_inventory_24"
+                android:drawableTint="?attr/colorOnSurface"
+                android:layout_margin="10dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Date">
+            android:hint="Date"
+            style="?attr/textInputStyle"
+            android:layout_marginTop="8dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/item_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"
-                android:clickable="true" />
+                android:clickable="true"
+                android:drawableStart="@drawable/baseline_calendar_month_24"
+                android:drawableTint="?attr/colorOnSurface"
+                android:layout_margin="10dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Location">
+            android:hint="Location"
+            style="?attr/textInputStyle"
+            android:layout_marginTop="8dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/item_location"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/baseline_location_pin_24"
+                android:drawableTint="?attr/colorOnSurface"
+                android:layout_margin="10dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Description">
+            android:hint="Description"
+            style="?attr/textInputStyle"
+            android:layout_marginTop="8dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/item_description"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/baseline_description_24"
+                android:drawableTint="?attr/colorOnSurface"
+                android:layout_margin="10dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <RadioGroup
+        <com.google.android.material.chip.ChipGroup
             android:id="@+id/item_status_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginTop="16dp"
+            app:singleSelection="true"
+            app:selectionRequired="true">
 
-            <RadioButton
+            <com.google.android.material.chip.Chip
                 android:id="@+id/status_lost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lost"
-                android:checked="true" />
+                android:checkable="true"
+                android:checked="true"
+                style="@style/Widget.Material3.Chip.Filter"
+                app:chipBackgroundColor="@color/chip_background_color"
+                app:chipStrokeWidth="1dp"
+                app:chipStrokeColor="?attr/colorPrimary"
+                app:textColor="@color/chip_text_color"/>
 
-            <RadioButton
+            <com.google.android.material.chip.Chip
                 android:id="@+id/status_found"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Found" />
-        </RadioGroup>
+                android:text="Found"
+                android:checkable="true"
+                style="@style/Widget.Material3.Chip.Filter"
+                app:chipBackgroundColor="@color/chip_background_color"
+                app:chipStrokeWidth="1dp"
+                app:chipStrokeColor="?attr/colorPrimary"
+                app:textColor="@color/chip_text_color"/>
+        </com.google.android.material.chip.ChipGroup>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/submit_button"
-            android:layout_width="match_parent"            android:layout_height="wrap_content"            android:text="Submit" />        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:layout_marginTop="16dp" />
+
+        <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_gravity="center"/>
     </LinearLayout>
-</FrameLayout>
+</ScrollView>

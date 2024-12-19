@@ -1,27 +1,82 @@
 {
   "project_info": {
-    "project_number": "807693116375",
-    "firebase_url": "https://track-mate-6b7b9-default-rtdb.firebaseio.com",
-    "project_id": "track-mate-6b7b9",
-    "storage_bucket": "track-mate-6b7b9.firebasestorage.app"
+    "project_number": "322598534879",
+    "firebase_url": "https://symilars-library.firebaseio.com",
+    "project_id": "symilars-library",
+    "storage_bucket": "symilars-library.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:807693116375:android:177e989204052d9b96a192",
+        "mobilesdk_app_id": "1:322598534879:android:0e76683c39e5c27a0fb36a",
         "android_client_info": {
           "package_name": "com.example.trackmate"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "322598534879-910pva1dje9a5oelerhp0qlsn7bpu3sq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyA55GCNXsBJNC27xuAjzGRGJEFCOtIEDUA"
+          "current_key": "AIzaSyBX8O14qqKfDuLxNbbi66w8STsHT-VI4PQ"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "322598534879-910pva1dje9a5oelerhp0qlsn7bpu3sq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:322598534879:android:ad5a18e64154e4ae0fb36a",
+        "android_client_info": {
+          "package_name": "com.symilars.symilarslibrary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "322598534879-6sl5ndi916cobsju3u5lq2ptug3bec5e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.symilars.symilarslibrary",
+            "certificate_hash": "8b0a0ece2256ea8cec00463d56bf5d57e58787ea"
+          }
+        },
+        {
+          "client_id": "322598534879-9di68dh8us2ofv7fn1djnls8t323tvd1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.symilars.symilarslibrary",
+            "certificate_hash": "c10218123d34c03c207a78d197459eae6354b9cd"
+          }
+        },
+        {
+          "client_id": "322598534879-910pva1dje9a5oelerhp0qlsn7bpu3sq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBX8O14qqKfDuLxNbbi66w8STsHT-VI4PQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "322598534879-910pva1dje9a5oelerhp0qlsn7bpu3sq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

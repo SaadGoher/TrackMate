@@ -18,8 +18,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.android.material.textfield.TextInputEditText;
+import android.view.inputmethod.EditorInfo;
 import java.util.ArrayList;
 import java.util.List;
+import com.google.android.material.card.MaterialCardView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import com.example.trackmate.MainActivity;
 
 public class HomeFragment extends Fragment {
 
@@ -30,6 +36,32 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        // Reset toolbar to default state
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity != null) {
+            activity.showBackButton(false);
+            activity.setToolbarTitle("TrackMate");
+        }
+
+        // Find the messages card and set click listener
+        MaterialCardView messagesCard = view.findViewById(R.id.messages_card);
+        messagesCard.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getParentFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.fragment_container, new MessageFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
+
+        TextInputEditText searchInput = view.findViewById(R.id.search_input);
+        searchInput.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                performSearch(searchInput.getText().toString());
+                return true;
+            }
+            return false;
+        });
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2)); // 2 columns in grid
@@ -45,6 +77,10 @@ public class HomeFragment extends Fragment {
         loadReportedItems();
 
         return view;
+    }
+
+    private void performSearch(String query) {
+        // Implement search functionality here
     }
 
     private void loadReportedItems() {

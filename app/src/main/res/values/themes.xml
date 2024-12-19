@@ -7,9 +7,13 @@
         <item name="colorBackground">@color/background_light</item>
         <item name="colorSurface">@color/surface_light</item>
         <item name="colorOnSurface">@color/on_surface_light</item>
-        <item name="colorError">@color/secondary_light</item>
+        <item name="android:windowBackground">@color/background_light</item>
+        
+        <!-- Custom styles -->
+        <item name="materialCardViewStyle">@style/Widget.App.CardView.Light</item>
+        <item name="textInputStyle">@style/Widget.App.TextInputLayout.Light</item>
+        <item name="materialButtonStyle">@style/Widget.App.Button.Light</item>
     </style>
-
 
     <style name="Theme.TrackMate" parent="Base.Theme.TrackMate" />
 
@@ -20,5 +24,71 @@
     <style name="ShapeAppearanceOverlay.Material3.Corner.Full" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+    <!-- Add this new style for rounded rectangle images -->
+    <style name="ShapeAppearanceOverlay.App.CornerSize10Percent" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10%</item>
+    </style>
+
+    <style name="CustomCardView" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="cardElevation">8dp</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="strokeColor">@android:color/transparent</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:clipChildren">false</item>
+    </style>
+
+    <!-- Card style for light theme -->
+    <style name="Widget.App.CardView.Light" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="cardForegroundColor">@android:color/transparent</item>
+        <item name="elevationOverlayEnabled">false</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="rippleColor">@android:color/transparent</item>
+        <item name="android:textColor">@color/on_surface_light</item>
+        <item name="android:textColorSecondary">@color/on_surface_light</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Light.Card</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:clipChildren">false</item>
+    </style>
+
+    <style name="ThemeOverlay.Light.Card" parent="">
+        <item name="colorSurface">@color/surface_light</item>
+        <item name="colorOnSurface">@color/on_surface_light</item>
+    </style>
+
+    <!-- TextInput style for light theme -->
+    <style name="Widget.App.TextInputLayout.Light" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/white</item>
+         <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="android:textColorHint">@color/gray</item>
+        <item name="hintTextColor">@color/primary_light</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+    </style>
+
+    <!-- Search Input style for light theme -->
+    <style name="Widget.App.SearchInput.Light" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxStrokeColor">@android:color/transparent</item>
+        <item name="android:textColorHint">@color/gray</item>
+        <item name="hintTextColor">@color/primary_light</item>
+        <item name="startIconTint">@color/gray</item>
+    </style>
+
+    <!-- Button style for light theme -->
+    <style name="Widget.App.Button.Light" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/primary_light</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="cornerRadius">12dp</item>
     </style>
 </resources>
