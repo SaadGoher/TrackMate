@@ -17,6 +17,7 @@ import com.example.trackmate.activities.ItemDetailActivity;
 import com.example.trackmate.adapters.ReportedItemAdapter;
 import com.example.trackmate.models.ReportedItem;
 import com.example.trackmate.services.FirebaseService;
+import com.example.trackmate.utils.SearchUtils;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -30,6 +31,8 @@ public class FoundFragment extends Fragment {
     private ReportedItemAdapter adapter;
     private List<ReportedItem> foundItemList;
     private EditText searchInput;
+
+    private List<ReportedItem> allItems = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,15 +78,15 @@ public class FoundFragment extends Fragment {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                foundItemList.clear();
+                allItems.clear();
                 for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
                     ReportedItem item = itemSnapshot.getValue(ReportedItem.class);
-                    if (item != null && item.getType() == ReportedItem.Type.FOUND) { // Only add found items
-                        item.setId(itemSnapshot.getKey()); // Save the Firebase key
-                        foundItemList.add(item);
+                    if (item != null && item.getType() == ReportedItem.Type.FOUND) {
+                        item.setId(itemSnapshot.getKey());
+                        allItems.add(item);
                     }
                 }
-                adapter.notifyDataSetChanged();
+                adapter.updateList(allItems);
             }
 
             @Override
@@ -94,12 +97,11 @@ public class FoundFragment extends Fragment {
     }
 
     private void filter(String text) {
-        List<ReportedItem> filteredList = new ArrayList<>();
-        for (ReportedItem item : foundItemList) {
-            if (item.getName().toLowerCase().contains(text.toLowerCase())) {
-                filteredList.add(item);
-            }
+        if (text.isEmpty()) {
+            adapter.updateList(allItems);
+            return;
         }
+        List<ReportedItem> filteredList = SearchUtils.filterItems(allItems, text);
         adapter.updateList(filteredList);
     }
 }

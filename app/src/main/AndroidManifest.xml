@@ -4,6 +4,12 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.location.gps" android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -15,9 +21,39 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TrackMate"
         tools:targetApi="31">
+        
+        <!-- Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAFikLLJSOrCD5n2gU3eq7-6FcqvR7JUJQ" />
+            
         <activity
             android:name=".activities.ShareProfileActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.LocationPickerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ScanQrActivity"
+            android:theme="@style/Theme.TrackMate.NoActionBar"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="trackmate" android:host="scan" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.UserProfileActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="trackmate" android:host="user" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activities.NotificationDetailActivity"
             android:exported="false" />
@@ -26,7 +62,14 @@
             android:exported="false" />
         <activity
             android:name=".activities.ItemDetailActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="trackmate" android:host="item" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activities.MessagesActivity"
             android:exported="false" />
@@ -43,10 +86,20 @@
             android:theme="@style/Theme.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <!-- FileProvider for sharing QR codes -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

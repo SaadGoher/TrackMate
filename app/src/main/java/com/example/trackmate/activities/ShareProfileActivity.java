@@ -72,10 +72,34 @@ public class ShareProfileActivity extends AppCompatActivity {
     private void generateQRCode(User user) {
         try {
             JSONObject userData = new JSONObject();
-            userData.put("userId", FirebaseService.getCurrentUser().getUid());
+            String userId = FirebaseService.getCurrentUser().getUid();
+            
+            // Add basic user identification
+            userData.put("userId", userId);
+            userData.put("appId", "com.example.trackmate"); // App identifier
+            userData.put("action", "view_profile"); // Default action
+            
+            // Add detailed user information
             userData.put("name", user.getFullName());
             userData.put("email", user.getEmail());
             userData.put("contact", user.getContact());
+            
+            // Add address information if available
+            if (user.getHome() != null && !user.getHome().isEmpty()) {
+                userData.put("home", user.getHome());
+            }
+            if (user.getStreet() != null && !user.getStreet().isEmpty()) {
+                userData.put("street", user.getStreet());
+            }
+            if (user.getCity() != null && !user.getCity().isEmpty()) {
+                userData.put("city", user.getCity());
+            }
+            if (user.getCountry() != null && !user.getCountry().isEmpty()) {
+                userData.put("country", user.getCountry());
+            }
+            
+            // Add timestamp for verification
+            userData.put("timestamp", System.currentTimeMillis());
 
             MultiFormatWriter writer = new MultiFormatWriter();
             BitMatrix bitMatrix = writer.encode(userData.toString(), BarcodeFormat.QR_CODE, 512, 512);

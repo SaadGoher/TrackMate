@@ -127,8 +127,11 @@ public class MessageFragment extends Fragment {
                             public void onDataChange(DataSnapshot messageSnapshot) {
                                 Message conversation = new Message();
                                 conversation.setReceiverId(userId);
-                                conversation.setReceiverName(user.getDisplayName());
-                                conversation.setReceiverImage(user.getProfileImageUrl()); // Update to match User model field name
+                                // Set receiver name with improved fallbacks
+                                String displayName = getDisplayName(user, userId);
+                                conversation.setReceiverName(displayName);
+                                conversation.setReceiverEmail(user.getEmail()); // Store email for fallback
+                                conversation.setReceiverImage(user.getProfileImageUrl());
                                 
                                 if (messageSnapshot.exists()) {
                                     for (DataSnapshot child : messageSnapshot.getChildren()) {
@@ -182,6 +185,28 @@ public class MessageFragment extends Fragment {
         if (activity != null) {
             activity.showBackButton(false);
             activity.setToolbarTitle("TrackMate");
+        }
+    }
+    
+    /**
+     * Get a valid display name with fallbacks to handle null or empty values
+     */
+    private String getDisplayName(User user, String userId) {
+        if (user == null) {
+            return "Unknown User";
+        }
+        
+        if (user.getDisplayName() != null && !user.getDisplayName().isEmpty()) {
+            return user.getDisplayName();
+        } else if (user.getFullName() != null && !user.getFullName().isEmpty()) {
+            return user.getFullName();
+        } else if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+            // Use email but trim the domain part for cleaner display
+            String email = user.getEmail();
+            int atIndex = email.indexOf('@');
+            return atIndex > 0 ? email.substring(0, atIndex) : email;
+        } else {
+            return "User " + userId;
         }
     }
 }

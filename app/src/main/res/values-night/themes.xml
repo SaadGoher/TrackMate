@@ -15,6 +15,12 @@
     </style>
 
     <style name="Theme.TrackMate" parent="Base.Theme.TrackMate" />
+    
+    <style name="Theme.TrackMate.NoActionBar" parent="Theme.TrackMate">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 
     <style name="Theme.SplashScreen" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/splash</item>

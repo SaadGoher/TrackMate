@@ -36,7 +36,23 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Message conversation = conversations.get(position);
-        holder.userName.setText(conversation.getReceiverName());
+        
+        // Get receiver name with improved fallbacks
+        String receiverName = conversation.getReceiverName();
+        if (receiverName == null || receiverName.trim().isEmpty()) {
+            // Try to use email first without domain if available
+            String email = conversation.getReceiverEmail();
+            if (email != null && !email.isEmpty()) {
+                int atIndex = email.indexOf('@');
+                receiverName = atIndex > 0 ? email.substring(0, atIndex) : email;
+            } else {
+                // Last resort: use receiver ID or "Unknown User"
+                receiverName = conversation.getReceiverId() != null ? 
+                    "User " + conversation.getReceiverId() : 
+                    "Unknown User";
+            }
+        }
+        holder.userName.setText(receiverName);
         
         if (conversation.getText() != null) {
             holder.lastMessage.setText(conversation.getText());
@@ -49,6 +65,9 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                     .load(conversation.getReceiverImage())
                     .placeholder(R.drawable.baseline_person_24)
                     .into(holder.profileImage);
+        } else {
+            // Make sure to set the default image
+            holder.profileImage.setImageResource(R.drawable.baseline_person_24);
         }
 
         holder.itemView.setOnClickListener(v -> 

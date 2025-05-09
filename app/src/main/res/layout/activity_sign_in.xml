@@ -104,13 +104,22 @@
             android:textColor="?attr/colorSecondary"
             android:textSize="12sp" />
 
+        <!-- Progress Bar -->
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/forgot_password"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone" />
+            
         <!-- Login Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/login_button"
             style="@style/Widget.App.Button.Light"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_below="@id/forgot_password"
+            android:layout_below="@id/progress_bar"
             android:layout_marginTop="16dp"
             android:text="LOG IN"
             android:layout_margin="20dp" />

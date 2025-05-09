@@ -2,6 +2,7 @@ package com.example.trackmate.models;
     
 
 public class User {
+    private String id;
     private String fullName;
     private String email;
     private String contact;
@@ -43,6 +44,10 @@ public class User {
     }
 
     public String getContact() {
+        return contact;
+    }
+
+    public String getPhoneNumber() {
         return contact;
     }
 
@@ -96,6 +101,14 @@ public class User {
 
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+    }
+    
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
 

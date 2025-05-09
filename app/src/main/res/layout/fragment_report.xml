@@ -21,14 +21,14 @@
             app:strokeColor="?attr/colorPrimary"
             android:layout_marginBottom="16dp">
 
-            <com.google.android.material.imageview.ShapeableImageView
+            <ImageView
                 android:id="@+id/item_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="center"
                 android:src="@drawable/baseline_add_a_photo_24"
-                android:tint="?attr/colorOnSurface"
-                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent" />
+                android:contentDescription="Item Image"
+                app:tint="?attr/colorOnSurface" />
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -75,8 +75,18 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/baseline_location_pin_24"
                 android:drawableTint="?attr/colorOnSurface"
-                android:layout_margin="10dp" />
+                android:layout_margin="10dp"
+                android:focusable="false" />
         </com.google.android.material.textfield.TextInputLayout>
+        
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/select_location_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select on Map"
+            app:icon="@drawable/baseline_location_on_24"
+            style="?attr/materialButtonStyle"
+            android:layout_marginTop="8dp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

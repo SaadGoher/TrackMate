@@ -9,13 +9,28 @@
         <item name="colorOnSurface">@color/on_surface_light</item>
         <item name="android:windowBackground">@color/background_light</item>
         
+        <!-- Ensure home/drawer icon displays properly -->
+        <item name="homeAsUpIndicator">@drawable/baseline_menu_24</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        
         <!-- Custom styles -->
         <item name="materialCardViewStyle">@style/Widget.App.CardView.Light</item>
         <item name="textInputStyle">@style/Widget.App.TextInputLayout.Light</item>
         <item name="materialButtonStyle">@style/Widget.App.Button.Light</item>
     </style>
+    
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/white</item>
+    </style>
 
     <style name="Theme.TrackMate" parent="Base.Theme.TrackMate" />
+    
+    <style name="Theme.TrackMate.NoActionBar" parent="Theme.TrackMate">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 
     <style name="Theme.SplashScreen" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/splash</item>

@@ -1,27 +1,42 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/nav_settings"
-        android:icon="@drawable/baseline_settings_24"
-        android:title="Settings" />
-    <item
-        android:id="@+id/nav_policy"
-        android:icon="@drawable/baseline_policy_24"
-        android:title="Policy" />
-    <item
-        android:id="@+id/nav_terms"
-        android:icon="@drawable/baseline_description_24"
-        android:title="Terms and Conditions" />
-    <item
-        android:id="@+id/nav_about"
-        android:icon="@drawable/baseline_info_24"
-        android:title="About" />
-    <item
-        android:id="@+id/nav_contact"
-        android:icon="@drawable/baseline_contact_mail_24"
-        android:title="Contact" />
-    <item
-        android:id="@+id/nav_sign_out"
-        android:icon="@drawable/baseline_logout_24"
-        android:title="Sign Out"
-        android:layout_gravity="bottom" />
+    <group android:id="@+id/nav_group_main">
+        <item
+            android:id="@+id/nav_notifications"
+            android:icon="@drawable/baseline_notifications_24"
+            android:title="Notifications" />
+        <item
+            android:id="@+id/nav_help_center"
+            android:icon="@drawable/baseline_help_24"
+            android:title="Help Center" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/baseline_settings_24"
+            android:title="Settings" />
+        <item
+            android:id="@+id/nav_policy"
+            android:icon="@drawable/baseline_policy_24"
+            android:title="Privacy Policy" />
+    </group>
+    
+    <group android:id="@+id/nav_group_secondary">
+        <item
+            android:id="@+id/nav_terms"
+            android:icon="@drawable/baseline_description_24"
+            android:title="Terms and Conditions" />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/baseline_info_24"
+            android:title="About" />
+        <item
+            android:id="@+id/nav_contact"
+            android:icon="@drawable/baseline_contact_mail_24"
+            android:title="Contact" />
+    </group>
+    
+    <group android:id="@+id/nav_group_account">
+        <item
+            android:id="@+id/nav_sign_out"
+            android:icon="@drawable/baseline_logout_24"
+            android:title="Sign Out" />
+    </group>
 </menu>
