@@ -16,6 +16,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.example.trackmate.activities.ScanQrActivity;
@@ -29,6 +31,14 @@ import com.example.trackmate.fragments.MapFragment;
 import com.example.trackmate.fragments.NotificationFragment;
 import com.example.trackmate.fragments.PolicyFragment;
 import com.example.trackmate.fragments.ProfileFragment;
+import com.example.trackmate.fragments.ReportFragment;
+import com.example.trackmate.fragments.SettingsFragment;
+import com.example.trackmate.fragments.TermsFragment;
+import com.example.trackmate.services.FirebaseService;
+import com.example.trackmate.utils.SharedPrefsUtil;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.example.trackmate.fragments.ReportFragment;
 import com.example.trackmate.fragments.SettingsFragment;
 import com.example.trackmate.fragments.TermsFragment;
@@ -67,7 +77,13 @@ public class MainActivity extends AppCompatActivity {
         setTheme(R.style.Theme_TrackMate);
         super.onCreate(savedInstanceState);
 
-        if (!SharedPrefsUtil.isLoggedIn(this)) {
+        // Check if user is logged in
+        if (!SharedPrefsUtil.isLoggedIn(this) || FirebaseService.getCurrentUser() == null) {
+            Log.d("MainActivity", "User not logged in, redirecting to SignInActivity");
+            // Clear any stale data
+            SharedPrefsUtil.clearUserData(this);
+            FirebaseService.getAuth().signOut();
+            
             Intent intent = new Intent(MainActivity.this, SignInActivity.class);
             startActivity(intent);
             finish();
@@ -249,8 +265,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseService.getAuth().signOut();
                 
                 // Clear local user data
-                SharedPrefsUtil.setLoggedIn(this, false);
-                SharedPrefsUtil.setUserId(this, null);
+                SharedPrefsUtil.clearUserData(this);
                 
                 // Navigate to sign in screen
                 Intent intent = new Intent(MainActivity.this, SignInActivity.class);

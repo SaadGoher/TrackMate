@@ -238,8 +238,10 @@ public class ReportFragment extends Fragment {
                         }
                     });
                 } else {
-                    // Create report without image
-                    createAndSaveReport(name, date, location, description, null, status);
+                    // Should never reach here due to validation, but as a fallback
+                    handleError("An image is required for reporting an item");
+                    progressBar.setVisibility(View.GONE);
+                    submitButton.setEnabled(true);
                 }
             }
         }
@@ -316,6 +318,10 @@ public class ReportFragment extends Fragment {
         }
         if (status.isEmpty()) {
             Toast.makeText(getContext(), "Status is required", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (imageUri == null && !isEditMode) {
+            Toast.makeText(getContext(), "Image is required for reporting an item", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

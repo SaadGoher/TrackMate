@@ -62,7 +62,19 @@ public class FirebaseService {
     }
 
     public static void signIn(String email, String password, OnCompleteListener<AuthResult> listener) {
-        getAuth().signInWithEmailAndPassword(email, password).addOnCompleteListener(listener);
+        Log.d(TAG, "👤 Attempting to sign in user: " + email);
+        
+        // Ensure we're logged out before attempting login
+        getAuth().signOut();
+        
+        getAuth().signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener(result -> {
+                    Log.d(TAG, "✅ Sign in successful for: " + email);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "❌ Sign in failed for: " + email, e);
+                })
+                .addOnCompleteListener(listener);
     }
 
     public static FirebaseUser getCurrentUser() {
@@ -70,12 +82,35 @@ public class FirebaseService {
     }
 
     public static void createUser(String email, String password, OnCompleteListener<AuthResult> listener) {
-        getAuth().createUserWithEmailAndPassword(email, password).addOnCompleteListener(listener);
+        Log.d(TAG, "👤 Attempting to create user: " + email);
+        
+        // Ensure we're logged out before creating a new user
+        getAuth().signOut();
+        
+        getAuth().createUserWithEmailAndPassword(email, password)
+                .addOnSuccessListener(result -> {
+                    Log.d(TAG, "✅ User creation successful for: " + email);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "❌ User creation failed for: " + email, e);
+                })
+                .addOnCompleteListener(listener);
     }
 
     public static void saveUserDetails(String userId, User userDetails) {
+        Log.d(TAG, "👤 Saving user details for: " + userId);
+        
+        // Set the ID in the user object
+        userDetails.setId(userId);
+        
         DatabaseReference userRef = getDatabase().child("users").child(userId);
-        userRef.setValue(userDetails);
+        userRef.setValue(userDetails)
+            .addOnSuccessListener(aVoid -> {
+                Log.d(TAG, "✅ User details saved successfully for: " + userId);
+            })
+            .addOnFailureListener(e -> {
+                Log.e(TAG, "❌ Failed to save user details for: " + userId, e);
+            });
     }
 
     public static void uploadImage(Uri imageUri, OnCompleteListener<Uri> listener) {
@@ -329,6 +364,17 @@ public class FirebaseService {
             Log.e("FirebaseService", "Error retrieving embeddings by type: " + e.getMessage(), e);
             callback.onError("Error retrieving embeddings: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Send a password reset email to the specified email address
+     * 
+     * @param email Email address to send the password reset link to
+     * @param listener Completion listener
+     */
+    public static void resetPassword(String email, OnCompleteListener<Void> listener) {
+        Log.d(TAG, "🔑 Sending password reset email to: " + email);
+        getAuth().sendPasswordResetEmail(email).addOnCompleteListener(listener);
     }
     
     /**

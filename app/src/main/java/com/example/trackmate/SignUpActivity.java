@@ -3,7 +3,9 @@ package com.example.trackmate;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -56,6 +58,9 @@ public class SignUpActivity extends AppCompatActivity {
         profileImage = findViewById(R.id.profile_image);
         MaterialButton selectImageButton = findViewById(R.id.select_image_button);
 
+        // Setup TextWatchers to clear errors on typing
+        setupTextWatchers();
+
         pickImageLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
             if (uri != null) {
                 profileImageUri = uri;
@@ -86,43 +91,8 @@ public class SignUpActivity extends AppCompatActivity {
         String country = countryInput.getText().toString().trim();
         String password = passwordInput.getText().toString().trim();
 
-        if (TextUtils.isEmpty(fullName)) {
-            fullNameInput.setError("Full Name is required");
-            return;
-        }
-
-        if (TextUtils.isEmpty(email)) {
-            emailInput.setError("Email is required");
-            return;
-        }
-
-        if (TextUtils.isEmpty(contact)) {
-            contactInput.setError("Contact is required");
-            return;
-        }
-
-        if (TextUtils.isEmpty(home)) {
-            homeInput.setError("Home Address is required");
-            return;
-        }
-
-        if (TextUtils.isEmpty(street)) {
-            streetInput.setError("Street is required");
-            return;
-        }
-
-        if (TextUtils.isEmpty(city)) {
-            cityInput.setError("City is required");
-            return;
-        }
-
-        if (TextUtils.isEmpty(country)) {
-            countryInput.setError("Country is required");
-            return;
-        }
-
-        if (TextUtils.isEmpty(password)) {
-            passwordInput.setError("Password is required");
+        // Validate all fields
+        if (!validateInputs(fullName, email, contact, home, street, city, country, password)) {
             return;
         }
 
@@ -170,11 +140,163 @@ public class SignUpActivity extends AppCompatActivity {
         userDetails.setProfileImageUrl(imageUrl);
         
         FirebaseService.saveUserDetails(userId, userDetails);
+        
+        // Ensure preferences are properly set
+        SharedPrefsUtil.clearUserData(SignUpActivity.this); // Clear any existing data first
         SharedPrefsUtil.setLoggedIn(SignUpActivity.this, true);
         SharedPrefsUtil.setUserId(SignUpActivity.this, userId);
         
         progressBar.setVisibility(View.GONE);
-        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+        
+        // Use flags to prevent going back to login screen with back button
+        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
         finish();
+        
+        Toast.makeText(SignUpActivity.this, "Account created successfully!", Toast.LENGTH_SHORT).show();
+    }
+    
+    private boolean validateInputs(String fullName, String email, String contact, String home, 
+                                  String street, String city, String country, String password) {
+        boolean isValid = true;
+        
+        // Name validation
+        if (TextUtils.isEmpty(fullName)) {
+            fullNameInput.setError("Full Name is required");
+            isValid = false;
+        } else if (fullName.length() < 3) {
+            fullNameInput.setError("Name must be at least 3 characters");
+            isValid = false;
+        } else {
+            fullNameInput.setError(null);
+        }
+        
+        // Email validation
+        if (TextUtils.isEmpty(email)) {
+            emailInput.setError("Email is required");
+            isValid = false;
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailInput.setError("Please enter a valid email address");
+            isValid = false;
+        } else {
+            emailInput.setError(null);
+        }
+        
+        // Contact validation
+        if (TextUtils.isEmpty(contact)) {
+            contactInput.setError("Contact is required");
+            isValid = false;
+        } else if (!isValidPhoneNumber(contact)) {
+            contactInput.setError("Please enter a valid phone number");
+            isValid = false;
+        } else {
+            contactInput.setError(null);
+        }
+        
+        // Address validation
+        if (TextUtils.isEmpty(home)) {
+            homeInput.setError("Home Address is required");
+            isValid = false;
+        } else {
+            homeInput.setError(null);
+        }
+        
+        if (TextUtils.isEmpty(street)) {
+            streetInput.setError("Street is required");
+            isValid = false;
+        } else {
+            streetInput.setError(null);
+        }
+        
+        if (TextUtils.isEmpty(city)) {
+            cityInput.setError("City is required");
+            isValid = false;
+        } else {
+            cityInput.setError(null);
+        }
+        
+        if (TextUtils.isEmpty(country)) {
+            countryInput.setError("Country is required");
+            isValid = false;
+        } else {
+            countryInput.setError(null);
+        }
+        
+        // Password validation
+        if (TextUtils.isEmpty(password)) {
+            passwordInput.setError("Password is required");
+            isValid = false;
+        } else if (password.length() < 6) {
+            passwordInput.setError("Password must be at least 6 characters");
+            isValid = false;
+        } else if (!isStrongPassword(password)) {
+            passwordInput.setError("Password should contain at least one number, one uppercase and one lowercase letter");
+            isValid = false;
+        } else {
+            passwordInput.setError(null);
+        }
+        
+        return isValid;
+    }
+    
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        // Remove non-digit characters for validation
+        String digitsOnly = phoneNumber.replaceAll("\\D", "");
+        // Validate phone number (most phone numbers are between 7 and 15 digits)
+        return digitsOnly.length() >= 7 && digitsOnly.length() <= 15;
+    }
+    
+    private boolean isStrongPassword(String password) {
+        boolean hasUpperCase = false;
+        boolean hasLowerCase = false;
+        boolean hasDigit = false;
+        
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                hasUpperCase = true;
+            } else if (Character.isLowerCase(c)) {
+                hasLowerCase = true;
+            } else if (Character.isDigit(c)) {
+                hasDigit = true;
+            }
+            
+            if (hasUpperCase && hasLowerCase && hasDigit) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    private void setupTextWatchers() {
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Clear error when user types
+                if (getCurrentFocus() instanceof EditText) {
+                    ((EditText) getCurrentFocus()).setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Not needed
+            }
+        };
+        
+        // Apply the watcher to all EditText fields
+        fullNameInput.addTextChangedListener(textWatcher);
+        emailInput.addTextChangedListener(textWatcher);
+        contactInput.addTextChangedListener(textWatcher);
+        homeInput.addTextChangedListener(textWatcher);
+        streetInput.addTextChangedListener(textWatcher);
+        cityInput.addTextChangedListener(textWatcher);
+        countryInput.addTextChangedListener(textWatcher);
+        passwordInput.addTextChangedListener(textWatcher);
     }
 }
