@@ -126,6 +126,7 @@
 
         <!-- OR Text -->
         <TextView
+            android:visibility="gone"
             android:id="@+id/or_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -148,6 +149,7 @@
 
             <!-- Facebook -->
             <com.google.android.material.button.MaterialButton
+                android:visibility="gone"
                 android:id="@+id/facebook_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -160,6 +162,8 @@
 
             <!-- Google -->
             <com.google.android.material.button.MaterialButton
+                android:visibility="gone"
+
                 android:id="@+id/google_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

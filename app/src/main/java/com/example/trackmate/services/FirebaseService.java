@@ -8,6 +8,7 @@ import android.util.Log;
 import com.example.trackmate.models.ImageEmbedding;
 import com.example.trackmate.models.User;
 import com.example.trackmate.models.ReportedItem;
+import com.example.trackmate.models.Notification;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.AuthResult;
@@ -375,6 +376,51 @@ public class FirebaseService {
     public static void resetPassword(String email, OnCompleteListener<Void> listener) {
         Log.d(TAG, "🔑 Sending password reset email to: " + email);
         getAuth().sendPasswordResetEmail(email).addOnCompleteListener(listener);
+    }
+    
+    /**
+     * Create a new notification
+     */
+    public static void createNotification(String userId, String title, String message, String itemId, OnCompleteListener<Void> listener) {
+        DatabaseReference notifRef = getDatabase().child("notifications").push();
+        Notification notification = new Notification(userId, title, message, itemId);
+        notification.setId(notifRef.getKey());
+        
+        notifRef.setValue(notification).addOnCompleteListener(listener);
+    }
+    
+    /**
+     * Delete a notification
+     */
+    public static void deleteNotification(String notificationId, OnCompleteListener<Void> listener) {
+        getDatabase().child("notifications").child(notificationId).removeValue().addOnCompleteListener(listener);
+    }
+    
+    /**
+     * Create notifications for both users when a similar item is found
+     */
+    public static void createSimilarItemNotifications(ReportedItem newItem, ReportedItem matchedItem, float similarityScore) {
+        // Notification for the user who just reported the item
+        String newItemUserTitle = matchedItem.getType() == ReportedItem.Type.FOUND ? "Similar Found Item" : "Similar Lost Item";
+        String newItemUserMsg = "We found a similar " + matchedItem.getType().toString().toLowerCase() + " item matching your " 
+                + newItem.getName() + " (" + Math.round(similarityScore * 100) + "% match)";
+        
+        createNotification(newItem.getUserId(), newItemUserTitle, newItemUserMsg, matchedItem.getId(), task -> {
+            if (!task.isSuccessful()) {
+                Log.e(TAG, "Failed to create notification for new item user", task.getException());
+            }
+        });
+
+        // Notification for the user who previously reported the item
+        String matchedItemUserTitle = newItem.getType() == ReportedItem.Type.FOUND ? "Similar Found Item" : "Similar Lost Item";
+        String matchedItemUserMsg = "Someone reported a " + newItem.getType().toString().toLowerCase() + " item similar to your " 
+                + matchedItem.getName() + " (" + Math.round(similarityScore * 100) + "% match)";
+        
+        createNotification(matchedItem.getUserId(), matchedItemUserTitle, matchedItemUserMsg, newItem.getId(), task -> {
+            if (!task.isSuccessful()) {
+                Log.e(TAG, "Failed to create notification for matched item user", task.getException());
+            }
+        });
     }
     
     /**

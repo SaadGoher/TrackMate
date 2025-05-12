@@ -2,12 +2,18 @@ package com.example.trackmate.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.trackmate.EditProfileActivity;
 import com.example.trackmate.R;
 import com.google.android.material.button.MaterialButton;
 
@@ -82,15 +89,12 @@ public class SettingsFragment extends Fragment {
     private void setupListeners() {
         // Account Settings
         editProfileOption.setOnClickListener(v -> {
-            // Navigate to edit profile screen or show dialog
-            Toast.makeText(requireContext(), "Edit Profile clicked", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to EditProfileActivity or show dialog
+            // Navigate to edit profile screen
+            startActivity(new Intent(requireContext(), EditProfileActivity.class));
         });
         
         changePasswordOption.setOnClickListener(v -> {
-            // Navigate to change password screen or show dialog
-            Toast.makeText(requireContext(), "Change Password clicked", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to ChangePasswordActivity or show dialog
+            showChangePasswordDialog();
         });
         
         // Notification Settings
@@ -162,6 +166,19 @@ public class SettingsFragment extends Fragment {
             // Update UI
             themeValue.setText(themes[which]);
             
+            // Apply theme change
+            switch (themes[which]) {
+                case "Light":
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    break;
+                case "Dark":
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    break;
+                case "System default":
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                    break;
+            }
+            
             // Show confirmation
             Toast.makeText(requireContext(), themes[which] + " theme selected", Toast.LENGTH_SHORT).show();
             
@@ -199,5 +216,91 @@ public class SettingsFragment extends Fragment {
         // For demo purposes, we'll just show a toast
         Toast.makeText(requireContext(), "Cache cleared successfully", Toast.LENGTH_SHORT).show();
     }
-}
     
+    private void showChangePasswordDialog() {
+        // Inflate custom dialog layout
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_change_password, null);
+        
+        // Initialize input fields
+        TextInputLayout currentPasswordLayout = dialogView.findViewById(R.id.current_password_layout);
+        TextInputLayout newPasswordLayout = dialogView.findViewById(R.id.new_password_layout);
+        TextInputLayout confirmPasswordLayout = dialogView.findViewById(R.id.confirm_password_layout);
+        
+        TextInputEditText currentPasswordInput = dialogView.findViewById(R.id.current_password_input);
+        TextInputEditText newPasswordInput = dialogView.findViewById(R.id.new_password_input);
+        TextInputEditText confirmPasswordInput = dialogView.findViewById(R.id.confirm_password_input);
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Change Password");
+        builder.setView(dialogView);
+        
+        builder.setPositiveButton("Change", null); // Set to null initially
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        
+        AlertDialog dialog = builder.create();
+        
+        // Show the dialog
+        dialog.show();
+        
+        // Override the positive button click to prevent dialog from closing on error
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String currentPassword = currentPasswordInput.getText().toString().trim();
+            String newPassword = newPasswordInput.getText().toString().trim();
+            String confirmPassword = confirmPasswordInput.getText().toString().trim();
+            
+            // Reset errors
+            currentPasswordLayout.setError(null);
+            newPasswordLayout.setError(null);
+            confirmPasswordLayout.setError(null);
+            
+            // Validate inputs
+            if (TextUtils.isEmpty(currentPassword)) {
+                currentPasswordLayout.setError("Enter current password");
+                return;
+            }
+            
+            if (TextUtils.isEmpty(newPassword)) {
+                newPasswordLayout.setError("Enter new password");
+                return;
+            }
+            
+            if (newPassword.length() < 6) {
+                newPasswordLayout.setError("Password must be at least 6 characters");
+                return;
+            }
+            
+            if (!newPassword.equals(confirmPassword)) {
+                confirmPasswordLayout.setError("Passwords do not match");
+                return;
+            }
+            
+            // Get current user
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            if (auth.getCurrentUser() != null) {
+                // Reauthenticate user
+                auth.getCurrentUser().reauthenticate(
+                    com.google.firebase.auth.EmailAuthProvider.getCredential(
+                        auth.getCurrentUser().getEmail(), currentPassword))
+                    .addOnSuccessListener(aVoid -> {
+                        // Update password
+                        auth.getCurrentUser().updatePassword(newPassword)
+                            .addOnSuccessListener(aVoid1 -> {
+                                Toast.makeText(requireContext(), 
+                                    "Password updated successfully", 
+                                    Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(requireContext(), 
+                                    "Failed to update password: " + e.getMessage(), 
+                                    Toast.LENGTH_SHORT).show();
+                            });
+                    })
+                    .addOnFailureListener(e -> {
+                        currentPasswordLayout.setError("Current password is incorrect");
+                    });
+            }
+        });
+    }
+}
+

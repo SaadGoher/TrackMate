@@ -368,11 +368,24 @@ public class ReportFragment extends Fragment {
                             public void onMatchesFound(List<ReportedItem> matchedItems, Map<String, Float> similarityScores) {
                                 progressBar.setVisibility(View.GONE);
                                 submitButton.setEnabled(true);
+                                
+                                // Create notifications for similar items
+                                for (ReportedItem matchedItem : matchedItems) {
+                                    float score = similarityScores.get(matchedItem.getId());
+                                    if (score >= 0.5f) { // Only notify for good matches
+                                        FirebaseService.createSimilarItemNotifications(item, matchedItem, score);
+                                    }
+                                }
 
-                                // Show potential matches to the user
-                                showMatchesDialog(matchedItems, similarityScores);
+                                // Show success toast with matches found
+                                Toast.makeText(getContext(), 
+                                    "Item reported successfully! " + matchedItems.size() + " similar items found.", 
+                                    Toast.LENGTH_LONG).show();
 
-                                // Still clear the form since the item has been reported
+                                // Navigate to item detail screen where similar items will be shown
+                                navigateToItemDetail(item);
+
+                                // Clear the form since the item has been reported
                                 clearForm();
                             }
 
@@ -382,6 +395,10 @@ public class ReportFragment extends Fragment {
                                 submitButton.setEnabled(true);
 
                                 Toast.makeText(getContext(), "Item reported successfully! No potential matches found.", Toast.LENGTH_LONG).show();
+                                
+                                // Navigate to item detail screen
+                                navigateToItemDetail(item);
+                                
                                 clearForm();
                             }
 
@@ -392,6 +409,7 @@ public class ReportFragment extends Fragment {
                                 submitButton.setEnabled(true);
 
                                 Toast.makeText(getContext(), "Item reported successfully! " + errorMessage, Toast.LENGTH_LONG).show();
+                                navigateToItemDetail(item);
                                 clearForm();
                             }
                         });
@@ -404,6 +422,7 @@ public class ReportFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     submitButton.setEnabled(true);
                     Toast.makeText(getContext(), "Item reported successfully!", Toast.LENGTH_SHORT).show();
+                    navigateToItemDetail(item);
                     clearForm();
                 }
             } else {
@@ -412,45 +431,9 @@ public class ReportFragment extends Fragment {
         });
     }
 
-    /**
-     * Show a dialog with potential matches
-     */
-    private void showMatchesDialog(List<ReportedItem> matchedItems, Map<String, Float> similarityScores) {
-        if (matchedItems.isEmpty()) {
-            return;
-        }
-
-        // Build a list of item names with their similarity scores
-        String[] itemNames = new String[matchedItems.size()];
-        String[] itemIds = new String[matchedItems.size()];
-
-        for (int i = 0; i < matchedItems.size(); i++) {
-            ReportedItem item = matchedItems.get(i);
-            float score = similarityScores.get(item.getId()) * 100; // Convert to percentage
-
-            itemNames[i] = item.getName() + " (" + String.format("%.1f", score) + "% match)";
-            itemIds[i] = item.getId();
-        }
-
-        // Show a dialog with the matches
-        new MaterialAlertDialogBuilder(getContext())
-                .setTitle("Potential Matches Found!")
-                .setItems(itemNames, (dialog, which) -> {
-                    // Open the selected item's detail
-                    String selectedItemId = itemIds[which];
-                    openItemDetail(selectedItemId);
-                })
-                .setPositiveButton("Close", null)
-                .setMessage("We found some items that might match what you're looking for. Click on an item to view details.")
-                .show();
-    }
-
-    /**
-     * Open the item detail activity for a specific item
-     */
-    private void openItemDetail(String itemId) {
+    private void navigateToItemDetail(ReportedItem item) {
         Intent intent = new Intent(getContext(), ItemDetailActivity.class);
-        intent.putExtra("ITEM_ID", itemId);
+        intent.putExtra("item_id", item.getId());
         startActivity(intent);
     }
 
